@@ -5,6 +5,8 @@ const util = require('util');
 const port = 3000;
 const clients = [];	//track connected clients
 
+
+
 //Server Web Client
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
