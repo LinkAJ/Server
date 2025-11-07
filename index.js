@@ -1,59 +1,59 @@
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const util = require('util');
-const port = 3000;
-const clients = [];	//track connected clients
 
+const app = express();
+const server = http.createServer(app);
 
+// ✅ Create a proper Socket.IO instance with CORS support
+const io = new Server(server, {
+  cors: {
+    origin: "*", // You can restrict this to your frontend URL if separate
+    methods: ["GET", "POST"]
+  }
+});
 
-//Server Web Client
-app.get('/', function(req, res){
+// ✅ Use Render's dynamic port (very important)
+const PORT = process.env.PORT || 3000;
+
+const clients = []; // Track connected clients
+
+// Serve the client HTML
+app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-//make one reference to event name so it can be easily renamed 
+// Keep your chat event (optional)
 const chatEvent = "chatMessage";
 
-//When a client connects, bind each desired event to the client socket
-io.on('connection', socket =>{
-	//track connected clients via log
-	clients.push(socket.id);
-	const clientConnectedMsg = 'User connected ' + util.inspect(socket.id) + ', total: ' + clients.length;
-		console.log(clientConnectedMsg);
+// Socket.IO connection handler
+io.on('connection', (socket) => {
+  clients.push(socket.id);
+  console.log(`User connected: ${socket.id}, total: ${clients.length}`);
 
-	//track disconnected clients via log
-	socket.on('disconnect', ()=>{
-		clients.pop(socket.id);
-		const clientDisconnectedMsg = 'User disconnected ' + util.inspect(socket.id) + ', total: ' + clients.length;
-		console.log(clientDisconnectedMsg);
-	})
+  // Handle disconnects
+  socket.on('disconnect', () => {
+    const index = clients.indexOf(socket.id);
+    if (index !== -1) clients.splice(index, 1);
+    console.log(`User disconnected: ${socket.id}, total: ${clients.length}`);
+  });
 
-	//multicast received message from client
-	//socket.on("lightOn", msg =>{
-	//	const combinedMsg = socket.id.substring(0,6) + ': ' + msg;
-	//	io.emit("lightOn", combinedMsg);
-	//	console.log('multicast: ' + combinedMsg);
-	//});
+  // Example events
+  socket.on('openDoor', () => {
+    io.emit('doorEvent');
+  });
 
-	socket.on('openDoor', () =>{
+  socket.on('lightOn', () => {
+    io.emit('lightOn');
+  });
 
-		io.emit('doorEvent');
-	});	
-
-	socket.on('lightOn', () =>{
-
-		io.emit('lightOn');
-	});	
-
-	socket.on('lightOff', () =>{
-
-		io.emit('lightOff');
-	});	
-
+  socket.on('lightOff', () => {
+    io.emit('lightOff');
+  });
 });
 
-//Start the Server
-http.listen(port, () => {
-  console.log('listening on *:' + port);
+// ✅ Start the server
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
