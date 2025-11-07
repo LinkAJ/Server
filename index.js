@@ -20,27 +20,35 @@ io.on('connection', socket =>{
 	//track connected clients via log
 	clients.push(socket.id);
 	const clientConnectedMsg = 'User connected ' + util.inspect(socket.id) + ', total: ' + clients.length;
-	io.emit(chatEvent, clientConnectedMsg);
-	console.log(clientConnectedMsg);
+		console.log(clientConnectedMsg);
 
 	//track disconnected clients via log
 	socket.on('disconnect', ()=>{
 		clients.pop(socket.id);
 		const clientDisconnectedMsg = 'User disconnected ' + util.inspect(socket.id) + ', total: ' + clients.length;
-		io.emit(chatEvent, clientDisconnectedMsg);
 		console.log(clientDisconnectedMsg);
 	})
 
 	//multicast received message from client
-	socket.on(chatEvent, msg =>{
-		const combinedMsg = socket.id.substring(0,6) + ': ' + msg;
-		io.emit(chatEvent, combinedMsg);
-		console.log('multicast: ' + combinedMsg);
-	});
+	//socket.on("lightOn", msg =>{
+	//	const combinedMsg = socket.id.substring(0,6) + ': ' + msg;
+	//	io.emit("lightOn", combinedMsg);
+	//	console.log('multicast: ' + combinedMsg);
+	//});
 
 	socket.on('openDoor', () =>{
-		console.log('Door Open Request Received');
+
 		io.emit('doorEvent');
+	});	
+
+	socket.on('lightOn', () =>{
+
+		io.emit('lightOn');
+	});	
+
+	socket.on('lightOff', () =>{
+
+		io.emit('lightOff');
 	});	
 
 });

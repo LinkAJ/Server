@@ -26,7 +26,7 @@
 	</head>
 	<body>
 
-		<button onclick=openDoor()
+		<button id="randomButton" onclick=openDoor()
 			style="margin: 100px; padding: 50px;">Reload</button>	
 
 		<div id="main">
@@ -47,9 +47,15 @@
 				$('#m').val('');
 				return false;
 			});
-			socket.on('chatMessage', function(msg){
-				$('#messages').append($('<li>').text(msg));
-				window.scrollTo(0,document.body.scrollHeight);
+			socket.on('lightOn', function(){
+				const button = document.getElementById("randomButton");
+  				//const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  				button.style.backgroundColor = "yellow";
+			});
+			socket.on('lightOff', function(){
+				const button = document.getElementById("randomButton");
+  				//const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+  				button.style.backgroundColor = "white";
 			});
 			function openDoor() {
 				socket.emit('openDoor', 'Open Sesame');
