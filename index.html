@@ -27,14 +27,14 @@
 	<body>
 
 		<button id="randomButton" onclick=openDoor()
-			style="margin: 100px; padding: 50px;">Reload</button>	
+			style="margin: 100px; padding: 50px;">DOOR</button>	
 
 		<div id="main">
 			<ul id="messages"></ul>
 		</div>
 		<div id="footer">
 			<form action="">
-				<input id="m" autocomplete="on" placeholder="Type here..." /><button>Se1nd</button>
+				<input id="m" autocomplete="on" placeholder="Type here..." /><button>Send</button>
 			</form>
 			
 		</div>
@@ -42,11 +42,11 @@
 		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 		<script>
 			var socket = io();
-			$('form').submit(function(){
-				socket.emit('chatMessage', $('#m').val());
-				$('#m').val('');
-				return false;
-			});
+			//$('form').submit(function(){
+			//	socket.emit('chatMessage', $('#m').val());
+			//	$('#m').val('');
+			//	return false;
+			//});
 			socket.on('lightOn', function(){
 				const button = document.getElementById("randomButton");
   				//const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
