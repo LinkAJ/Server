@@ -39,14 +39,14 @@
 			
 		</div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
-		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 		<script>
 			var socket = io();
-			//$('form').submit(function(){
-			//	socket.emit('chatMessage', $('#m').val());
-			//	$('#m').val('');
-			//	return false;
-			//});
+			$('form').submit(function(){
+				socket.emit('chatMessage', $('#m').val());
+				$('#m').val('');
+				return false;
+			});
 			socket.on('lightOn', function(){
 				const button = document.getElementById("randomButton");
   				//const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
